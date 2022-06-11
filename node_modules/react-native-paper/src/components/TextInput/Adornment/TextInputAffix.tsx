@@ -15,7 +15,7 @@ import { AdornmentSide } from './enums';
 
 const AFFIX_OFFSET = 12;
 
-type Props = {
+export type Props = {
   /**
    * Text to show.
    */
@@ -38,6 +38,7 @@ type ContextState = {
   textStyle?: StyleProp<TextStyle>;
   side: AdornmentSide;
   paddingHorizontal?: number | string;
+  maxFontSizeMultiplier?: number | undefined | null;
 };
 
 const AffixContext = React.createContext<ContextState>({
@@ -59,6 +60,7 @@ const AffixAdornment: React.FunctionComponent<
   onLayout,
   visible,
   paddingHorizontal,
+  maxFontSizeMultiplier,
 }) => {
   return (
     <AffixContext.Provider
@@ -69,6 +71,7 @@ const AffixAdornment: React.FunctionComponent<
         onLayout,
         visible,
         paddingHorizontal,
+        maxFontSizeMultiplier,
       }}
     >
       {affix}
@@ -115,6 +118,7 @@ const TextInputAffix = ({ text, textStyle: labelStyle, theme }: Props) => {
     side,
     visible,
     paddingHorizontal,
+    maxFontSizeMultiplier,
   } = React.useContext(AffixContext);
   const textColor = color(theme.colors.text)
     .alpha(theme.dark ? 0.7 : 0.54)
@@ -144,7 +148,12 @@ const TextInputAffix = ({ text, textStyle: labelStyle, theme }: Props) => {
       ]}
       onLayout={onLayout}
     >
-      <Text style={[{ color: textColor }, textStyle, labelStyle]}>{text}</Text>
+      <Text
+        maxFontSizeMultiplier={maxFontSizeMultiplier}
+        style={[{ color: textColor }, textStyle, labelStyle]}
+      >
+        {text}
+      </Text>
     </Animated.View>
   );
 };

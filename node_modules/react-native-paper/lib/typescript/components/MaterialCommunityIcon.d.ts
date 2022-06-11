@@ -1,4 +1,3 @@
-/// <reference types="react" />
 export declare type IconProps = {
     name: string;
     color: string;

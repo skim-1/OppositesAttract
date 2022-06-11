@@ -17,6 +17,7 @@ import {
 import Surface from './Surface';
 import { useTheme } from '../core/theming';
 import useAnimatedValue from '../utils/useAnimatedValue';
+import { addEventListener } from '../utils/addEventListener';
 
 type Props = {
   /**
@@ -130,12 +131,9 @@ export default function Modal({
   );
 
   const showModal = () => {
-    if (subscription.current?.remove) {
-      subscription.current.remove();
-    } else {
-      BackHandler.removeEventListener('hardwareBackPress', handleBack);
-    }
-    subscription.current = BackHandler.addEventListener(
+    subscription.current?.remove();
+    subscription.current = addEventListener(
+      BackHandler,
       'hardwareBackPress',
       handleBack
     );
@@ -150,13 +148,16 @@ export default function Modal({
     }).start();
   };
 
-  const hideModal = () => {
+  const removeListeners = () => {
     if (subscription.current?.remove) {
       subscription.current?.remove();
     } else {
       BackHandler.removeEventListener('hardwareBackPress', handleBack);
     }
+  };
 
+  const hideModal = () => {
+    removeListeners();
     const { scale } = animation;
 
     Animated.timing(opacity, {
@@ -194,6 +195,10 @@ export default function Modal({
     prevVisible.current = visible;
   });
 
+  React.useEffect(() => {
+    return removeListeners;
+  }, []);
+
   if (!rendered) return null;
 
   return (
@@ -228,9 +233,11 @@ export default function Modal({
       >
         <Surface
           style={
-            [{ opacity }, styles.content, contentContainerStyle] as StyleProp<
-              ViewStyle
-            >
+            [
+              { opacity },
+              styles.content,
+              contentContainerStyle,
+            ] as StyleProp<ViewStyle>
           }
         >
           {children}

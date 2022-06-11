@@ -5,7 +5,7 @@ import IconButton from '../../IconButton';
 import type { $Omit } from '../../../../src/types';
 import type { IconSource } from '../../Icon';
 
-type Props = $Omit<
+export type Props = $Omit<
   React.ComponentProps<typeof IconButton>,
   'icon' | 'theme' | 'color'
 > & {
@@ -103,9 +103,8 @@ const TextInputIcon = ({
   color,
   ...rest
 }: Props) => {
-  const { style, isTextInputFocused, forceFocus } = React.useContext(
-    StyleContext
-  );
+  const { style, isTextInputFocused, forceFocus } =
+    React.useContext(StyleContext);
 
   const onPressWithFocusControl = React.useCallback(() => {
     if (forceTextInputFocus && !isTextInputFocused) {
